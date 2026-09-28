@@ -1,0 +1,7 @@
+# Carpetas personales que no se publican en el sitio
+ejercicios/
+personal/
+
+# Sistema
+.DS_Store
+Thumbs.db

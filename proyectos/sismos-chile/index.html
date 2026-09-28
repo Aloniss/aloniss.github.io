@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title data-traducir data-es-texto="Un año de sismos en Chile · Alen Miranda" data-en-texto="A year of earthquakes in Chile · Alen Miranda">Un año de sismos en Chile · Alen Miranda</title>
+  <meta name="description" content="Mapa animado de 799 sismos de magnitud 3 o más en Chile y alrededores, coloreados por profundidad y enlazados a un gráfico semanal."
+        data-traducir
+        data-es-content="Mapa animado de 799 sismos de magnitud 3 o más en Chile y alrededores, coloreados por profundidad y enlazados a un gráfico semanal."
+        data-en-content="Animated map of 799 magnitude 3+ earthquakes in and around Chile, colored by depth and linked to a weekly chart.">
+  <link rel="icon" href="../../img/icono.svg" type="image/svg+xml">
+
+  <!-- Aplica tema e idioma antes de pintar, para que no parpadeen -->
+  <script src="../../js/arranque.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@6.11.2/dist/maplibre-gl.css">
+  <link rel="stylesheet" href="../../css/estilos.css">
+</head>
+<body>
+  <a class="saltar" href="#contenido"><span lang="es">Saltar al contenido</span><span lang="en">Skip to content</span></a>
+
+  <header class="barra">
+    <div class="contenedor">
+      <a class="marca" href="../../">
+        <svg viewBox="0 0 28 28" width="28" height="28" fill="none" stroke="var(--serie-1)" stroke-width="1.8" aria-hidden="true">
+          <path d="M14 3.5c5.8 0 10.5 4.1 10.5 9.7 0 6.2-5 11.3-10.8 11.3C8 24.5 3.5 20 3.5 14 3.5 8 8.3 3.5 14 3.5Z"/>
+          <path d="M14.3 8c3.4 0 6 2.4 6 5.6 0 3.6-2.8 6.4-6.2 6.4-3.3 0-5.8-2.6-5.8-6 0-3.3 2.6-6 6-6Z"/>
+          <circle cx="14.2" cy="13.8" r="2" fill="var(--serie-1)" stroke="none"/>
+        </svg>
+        Alen Miranda
+      </a>
+      <nav class="navegacion" aria-label="Principal" data-traducir data-es-aria-label="Principal" data-en-aria-label="Main">
+        <a href="../../#proyectos"><span lang="es">Proyectos</span><span lang="en">Projects</span></a>
+        <a class="opcional" href="../../#contacto"><span lang="es">Contacto</span><span lang="en">Contact</span></a>
+        <div class="idiomas" role="group" aria-label="Idioma / Language">
+          <button type="button" data-boton-idioma="es" aria-pressed="true">ES</button>
+          <button type="button" data-boton-idioma="en" aria-pressed="false">EN</button>
+        </div>
+        <button class="boton-tema" type="button" data-boton-tema>
+          <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="2"/>
+            <path d="M12 3.5a8.5 8.5 0 0 1 0 17Z" fill="currentColor"/>
+          </svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main id="contenido" class="contenedor">
+    <nav class="migas" aria-label="Ruta" data-traducir data-es-aria-label="Ruta" data-en-aria-label="Breadcrumb">
+      <a href="../../#proyectos"><span lang="es">← Todos los proyectos</span><span lang="en">← All projects</span></a>
+    </nav>
+
+    <header class="proyecto-cabecera">
+      <p class="antetitulo"><span lang="es">Sismología · Mapa animado</span><span lang="en">Seismology · Animated map</span></p>
+      <h1><span lang="es">Un año de sismos en Chile y alrededores</span><span lang="en">A year of earthquakes in and around Chile</span></h1>
+      <p class="bajada" lang="es">Todos los sismos de magnitud 3 o más registrados por el USGS entre el 29 de septiembre de 2025 y el 27 de septiembre de 2026. Presiona <strong>Reproducir</strong> para ver cómo se acumulan semana a semana.</p>
+      <p class="bajada" lang="en">Every magnitude 3+ earthquake recorded by the USGS between September 29, 2025 and September 27, 2026. Press <strong>Play</strong> to watch them build up week by week.</p>
+    </header>
+
+    <!-- Las cifras se calculan desde los datos en app.js -->
+    <dl class="cifras">
+      <div class="cifra"><dt><span lang="es">Sismos registrados</span><span lang="en">Recorded earthquakes</span></dt><dd data-cifra="total">–</dd></div>
+      <div class="cifra"><dt><span lang="es">Mayor magnitud</span><span lang="en">Largest magnitude</span></dt><dd data-cifra="mayor">–</dd></div>
+      <div class="cifra"><dt><span lang="es">Profundidad mediana</span><span lang="en">Median depth</span></dt><dd data-cifra="profundidad">–</dd></div>
+      <div class="cifra"><dt><span lang="es">Semana más activa</span><span lang="en">Busiest week</span></dt><dd data-cifra="semana">–</dd></div>
+    </dl>
+
+    <section class="panel" aria-label="Mapa de sismos" data-traducir data-es-aria-label="Mapa de sismos" data-en-aria-label="Earthquake map">
+      <div class="mapa-proyecto">
+        <div class="mapa" id="mapa"></div>
+
+        <div class="leyenda" id="leyenda">
+          <div>
+            <p class="leyenda-titulo"><span lang="es">Profundidad</span><span lang="en">Depth</span></p>
+            <ul>
+              <li><span class="muestra" style="--c: var(--prof-1)"></span>0 – 35 km</li>
+              <li><span class="muestra" style="--c: var(--prof-2)"></span>35 – 70 km</li>
+              <li><span class="muestra" style="--c: var(--prof-3)"></span>70 – 150 km</li>
+              <li><span class="muestra" style="--c: var(--prof-4)"></span><span lang="es">Más de 150 km</span><span lang="en">Over 150 km</span></li>
+            </ul>
+          </div>
+          <div>
+            <p class="leyenda-titulo"><span lang="es">Magnitud</span><span lang="en">Magnitude</span></p>
+            <div class="tamanos">
+              <!-- Diámetros iguales a los radios del mapa (app.js) × 2 -->
+              <span><i style="width: 5px; height: 5px"></i>3</span>
+              <span><i style="width: 14px; height: 14px"></i>5</span>
+              <span><i style="width: 36px; height: 36px"></i>7</span>
+            </div>
+          </div>
+          <p class="nota-norte" id="nota-norte" hidden>
+            <span lang="es">Mapa girado 90°: el norte está a la izquierda y el océano abajo.</span>
+            <span lang="en">Map rotated 90°: north is to the left and the ocean at the bottom.</span>
+          </p>
+        </div>
+      </div>
+
+      <div class="linea-tiempo">
+        <!-- El texto del botón lo pone app.js (cambia entre reproducir y pausa) -->
+        <button class="boton" type="button" id="reproducir" aria-pressed="false">▶ Reproducir</button>
+        <label class="control-rango">
+          <input type="range" id="deslizador" aria-label="Fecha mostrada en el mapa"
+                 data-traducir data-es-aria-label="Fecha mostrada en el mapa" data-en-aria-label="Date shown on the map">
+          <span class="extremos"><span id="fecha-inicio"></span><span id="fecha-fin"></span></span>
+        </label>
+        <output class="lectura" for="deslizador">
+          <strong id="fecha-actual">–</strong>
+          <span id="conteo-actual"></span>
+        </output>
+        <label class="velocidad"><span lang="es">Velocidad</span><span lang="en">Speed</span>
+          <select id="velocidad">
+            <option value="7" data-traducir data-es-texto="1 semana/s" data-en-texto="1 week/s">1 semana/s</option>
+            <option value="21" selected data-traducir data-es-texto="3 semanas/s" data-en-texto="3 weeks/s">3 semanas/s</option>
+            <option value="60" data-traducir data-es-texto="2 meses/s" data-en-texto="2 months/s">2 meses/s</option>
+          </select>
+        </label>
+      </div>
+    </section>
+
+    <section class="panel bloque">
+      <h2><span lang="es">Sismos por semana</span><span lang="en">Earthquakes per week</span></h2>
+      <p class="subtitulo">
+        <span lang="es">Haz clic en una barra para ver el mapa hasta esa semana.</span>
+        <span lang="en">Click a bar to show the map up to that week.</span>
+      </p>
+      <div class="lienzo-grafico">
+        <canvas id="grafico" role="img"
+                aria-label="Gráfico de columnas con la cantidad de sismos por semana. Los mismos datos están en la tabla de abajo."
+                data-traducir
+                data-es-aria-label="Gráfico de columnas con la cantidad de sismos por semana. Los mismos datos están en la tabla de abajo."
+                data-en-aria-label="Column chart of the number of earthquakes per week. The same data is in the table below."></canvas>
+      </div>
+      <details class="tabla-datos">
+        <summary><span lang="es">Ver los datos como tabla</span><span lang="en">Show the data as a table</span></summary>
+        <div class="tabla-desplazable">
+          <table>
+            <thead>
+              <tr>
+                <th><span lang="es">Semana</span><span lang="en">Week</span></th>
+                <th class="num"><span lang="es">Sismos</span><span lang="en">Earthquakes</span></th>
+                <th class="num"><span lang="es">Mayor magnitud</span><span lang="en">Largest magnitude</span></th>
+              </tr>
+            </thead>
+            <tbody id="tabla"></tbody>
+          </table>
+        </div>
+      </details>
+    </section>
+
+    <article class="texto-proyecto">
+      <h2><span lang="es">Qué muestra el mapa</span><span lang="en">What the map shows</span></h2>
+      <p lang="es">La placa de Nazca se hunde bajo la placa Sudamericana a lo largo de toda la costa de Chile. Por eso los sismos cerca del mar son someros y se vuelven más profundos hacia el este, siguiendo la placa que baja por debajo de la cordillera. En el mapa se ve como un cambio de color desde la costa hacia Argentina y Bolivia.</p>
+      <p lang="en">The Nazca plate sinks beneath the South American plate along the entire coast of Chile. That is why earthquakes near the sea are shallow and get deeper to the east, following the plate as it descends beneath the Andes. On the map this shows up as a change in color from the coast toward Argentina and Bolivia.</p>
+
+      <h2><span lang="es">Cómo se hizo</span><span lang="en">How it was made</span></h2>
+      <ul>
+        <li lang="es"><strong>Datos:</strong> catálogo de sismos del <a href="https://earthquake.usgs.gov/fdsnws/event/1/">USGS (ComCat)</a>, magnitud ≥ 3, entre 17° S y 56° S y entre 76° O y 66° O. Descargados el 28 de septiembre de 2026 y guardados en <code>datos/sismos.geojson</code>.</li>
+        <li lang="en"><strong>Data:</strong> <a href="https://earthquake.usgs.gov/fdsnws/event/1/">USGS (ComCat)</a> earthquake catalog, magnitude ≥ 3, between 17° S and 56° S and between 76° W and 66° W. Downloaded on September 28, 2026 and stored in <code>datos/sismos.geojson</code>.</li>
+        <li lang="es"><strong>Mapa:</strong> <a href="https://maplibre.org/">MapLibre GL JS</a> con mapa base de <a href="https://openfreemap.org/">OpenFreeMap</a> (datos © OpenStreetMap). El tamaño del círculo crece con la magnitud y el color indica la profundidad.</li>
+        <li lang="en"><strong>Map:</strong> <a href="https://maplibre.org/">MapLibre GL JS</a> with an <a href="https://openfreemap.org/">OpenFreeMap</a> basemap (data © OpenStreetMap). Circle size grows with magnitude and color shows depth.</li>
+        <li lang="es"><strong>Animación:</strong> un filtro por fecha que avanza en cada cuadro; los sismos nuevos dejan una onda que se expande y se apaga.</li>
+        <li lang="en"><strong>Animation:</strong> a date filter that moves forward every frame; new earthquakes leave a ripple that expands and fades.</li>
+        <li lang="es"><strong>Gráfico:</strong> <a href="https://www.chartjs.org/">Chart.js</a>, conectado al mapa: las semanas que aún no llegan se ven en gris.</li>
+        <li lang="en"><strong>Chart:</strong> <a href="https://www.chartjs.org/">Chart.js</a>, linked to the map: weeks that haven't arrived yet are shown in gray.</li>
+      </ul>
+      <p lang="es">El catálogo del USGS no incluye todos los sismos pequeños que registra el Centro Sismológico Nacional, así que estos conteos son menores que los oficiales de Chile.</p>
+      <p lang="en">The USGS catalog does not include all the small earthquakes recorded by Chile's National Seismological Center, so these counts are lower than Chile's official figures.</p>
+    </article>
+  </main>
+
+  <footer class="pie">
+    <div class="contenedor">
+      <span>© 2026 Alen Miranda</span>
+      <span>
+        <span lang="es">Datos: USGS · Mapa base © OpenStreetMap, OpenFreeMap</span>
+        <span lang="en">Data: USGS · Basemap © OpenStreetMap, OpenFreeMap</span>
+      </span>
+    </div>
+  </footer>
+
+  <script type="module" src="../../js/sitio.js"></script>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
