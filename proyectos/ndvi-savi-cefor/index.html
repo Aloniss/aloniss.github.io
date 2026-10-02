@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title data-traducir data-es-texto="NDVI y SAVI en una restauración fallida · Alen Miranda" data-en-texto="NDVI and SAVI in a failed restoration · Alen Miranda">NDVI y SAVI en una restauración fallida · Alen Miranda</title>
+  <meta name="description" content="Seguimiento con Sentinel-2 de una corta de aromo en el fundo del CEFOR (Valdivia): series de NDVI y SAVI y visita a terreno."
+        data-traducir
+        data-es-content="Seguimiento con Sentinel-2 de una corta de aromo en el fundo del CEFOR (Valdivia): series de NDVI y SAVI y visita a terreno."
+        data-en-content="Sentinel-2 monitoring of a blackwood clearing at the CEFOR estate (Valdivia, Chile): NDVI and SAVI time series and a field visit.">
+  <link rel="icon" href="../../img/icono.svg" type="image/svg+xml">
+
+  <!-- Aplica tema e idioma antes de pintar, para que no parpadeen -->
+  <script src="../../js/arranque.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@6.11.2/dist/maplibre-gl.css">
+  <link rel="stylesheet" href="../../css/estilos.css">
+</head>
+<body>
+  <a class="saltar" href="#contenido"><span lang="es">Saltar al contenido</span><span lang="en">Skip to content</span></a>
+
+  <header class="barra">
+    <div class="contenedor">
+      <a class="marca" href="../../">
+        <svg viewBox="0 0 28 28" width="28" height="28" fill="none" stroke="var(--serie-1)" stroke-width="1.8" aria-hidden="true">
+          <path d="M14 3.5c5.8 0 10.5 4.1 10.5 9.7 0 6.2-5 11.3-10.8 11.3C8 24.5 3.5 20 3.5 14 3.5 8 8.3 3.5 14 3.5Z"/>
+          <path d="M14.3 8c3.4 0 6 2.4 6 5.6 0 3.6-2.8 6.4-6.2 6.4-3.3 0-5.8-2.6-5.8-6 0-3.3 2.6-6 6-6Z"/>
+          <circle cx="14.2" cy="13.8" r="2" fill="var(--serie-1)" stroke="none"/>
+        </svg>
+        Alen Miranda
+      </a>
+      <nav class="navegacion" aria-label="Principal" data-traducir data-es-aria-label="Principal" data-en-aria-label="Main">
+        <a href="../../#proyectos"><span lang="es">Proyectos</span><span lang="en">Projects</span></a>
+        <a class="opcional" href="../../#contacto"><span lang="es">Contacto</span><span lang="en">Contact</span></a>
+        <div class="idiomas" role="group" aria-label="Idioma / Language">
+          <button type="button" data-boton-idioma="es" aria-pressed="true">ES</button>
+          <button type="button" data-boton-idioma="en" aria-pressed="false">EN</button>
+        </div>
+        <button class="boton-tema" type="button" data-boton-tema>
+          <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="2"/>
+            <path d="M12 3.5a8.5 8.5 0 0 1 0 17Z" fill="currentColor"/>
+          </svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main id="contenido" class="contenedor">
+    <nav class="migas" aria-label="Ruta" data-traducir data-es-aria-label="Ruta" data-en-aria-label="Breadcrumb">
+      <a href="../../#proyectos"><span lang="es">← Todos los proyectos</span><span lang="en">← All projects</span></a>
+    </nav>
+
+    <header class="proyecto-cabecera">
+      <p class="antetitulo"><span lang="es">Teledetección · Restauración ecológica</span><span lang="en">Remote sensing · Ecological restoration</span></p>
+      <h1><span lang="es">NDVI y SAVI en una restauración fallida</span><span lang="en">NDVI and SAVI in a failed restoration</span></h1>
+      <p class="bajada" lang="es">En 2022 se cortó un rodal de aromo (<em>Acacia melanoxylon</em>) de unas 3 hectáreas en el fundo del CEFOR, en el Arboretum de Valdivia, para plantar coihue, roble y ulmo. Con imágenes Sentinel-2 seguí la vegetación del fundo antes y después de la corta, y el 20 de agosto de 2024 lo recorrí en terreno.</p>
+      <p class="bajada" lang="en">In 2022 a roughly 3-hectare stand of blackwood (<em>Acacia melanoxylon</em>) was cleared at the CEFOR estate in the Valdivia Arboretum, Chile, to plant native coihue, roble and ulmo. I tracked the estate's vegetation with Sentinel-2 imagery before and after the clearing, and visited it in the field on August 20, 2024.</p>
+    </header>
+
+    <!-- Las cifras se calculan desde los datos en app.js -->
+    <dl class="cifras">
+      <div class="cifra"><dt><span lang="es">Imágenes analizadas</span><span lang="en">Images analyzed</span></dt><dd data-cifra="imagenes">–</dd></div>
+      <div class="cifra"><dt><span lang="es">NDVI antes de la corta</span><span lang="en">NDVI before clearing</span></dt><dd data-cifra="antes">–</dd></div>
+      <div class="cifra"><dt><span lang="es">NDVI más bajo (GAM)</span><span lang="en">Lowest NDVI (GAM)</span></dt><dd data-cifra="minimo">–</dd></div>
+      <div class="cifra"><dt><span lang="es">NDVI al final (GAM)</span><span lang="en">Latest NDVI (GAM)</span></dt><dd data-cifra="final">–</dd></div>
+    </dl>
+
+    <div class="dos-paneles mapa-y-video">
+      <section class="panel" aria-label="Mapa del fundo y núcleos de plantación" data-traducir data-es-aria-label="Mapa del fundo y núcleos de plantación" data-en-aria-label="Map of the estate and planting nuclei">
+        <div class="mapa-proyecto">
+          <div class="mapa" id="mapa"></div>
+          <div class="leyenda">
+            <div>
+              <p class="leyenda-titulo"><span lang="es">Núcleos de plantación</span><span lang="en">Planting nuclei</span></p>
+              <ul>
+                <li><span class="simbolo relleno" style="--c: var(--serie-2)"></span><span lang="es">Visitados, con foto</span><span lang="en">Visited, with photo</span></li>
+                <li><span class="simbolo relleno" style="--c: var(--serie-1)"></span><span lang="es">Resto de los núcleos</span><span lang="en">Other nuclei</span></li>
+                <li><span class="clave-linea" style="--c: #ffffff; box-shadow: 0 0 0 1px rgba(0,0,0,.45)"></span><span lang="es">Límite del fundo</span><span lang="en">Estate boundary</span></li>
+              </ul>
+            </div>
+            <p class="nota-norte"><span lang="es">Haz clic en un punto naranja para ver la foto.</span><span lang="en">Click an orange point to see the photo.</span></p>
+          </div>
+        </div>
+      </section>
+
+      <figure class="panel video-panel">
+        <video src="media/timelapse.mp4" poster="media/timelapse-poster.jpg" controls muted loop playsinline preload="none"
+               aria-label="Timelapse de imágenes de Google Earth del fundo entre 2021 y 2024"
+               data-traducir
+               data-es-aria-label="Timelapse de imágenes de Google Earth del fundo entre 2021 y 2024"
+               data-en-aria-label="Google Earth imagery timelapse of the estate from 2021 to 2024"></video>
+        <figcaption>
+          <span lang="es">Timelapse del fundo (imágenes de Google Earth): la corta aparece a inicios de 2022 y en 2024 la cobertura vegetal ya está completa.</span>
+          <span lang="en">Timelapse of the estate (Google Earth imagery): the clearing shows up in early 2022, and by 2024 the vegetation cover is complete again.</span>
+        </figcaption>
+      </figure>
+    </div>
+
+    <section class="panel bloque">
+      <h2><span lang="es">NDVI y SAVI promedio del fundo</span><span lang="en">Mean NDVI and SAVI for the estate</span></h2>
+      <p class="subtitulo">
+        <span lang="es">Cada punto es una imagen Sentinel-2; la línea es la tendencia suavizada (GAM). Pasa el puntero para ver la media ± desviación estándar.</span>
+        <span lang="en">Each point is one Sentinel-2 image; the line is the smoothed trend (GAM). Hover to see the mean ± standard deviation.</span>
+      </p>
+      <ul class="grafico-leyenda">
+        <li><span class="clave-punto" style="--c: var(--serie-ndvi)"></span><span class="clave-linea" style="--c: var(--serie-ndvi)"></span>NDVI</li>
+        <li><span class="clave-punto" style="--c: var(--serie-savi)"></span><span class="clave-linea" style="--c: var(--serie-savi)"></span>SAVI</li>
+        <li><span class="clave-banda"></span><span lang="es">Año de la corta (2022)</span><span lang="en">Clearing year (2022)</span></li>
+      </ul>
+      <div class="lienzo-grafico alto">
+        <canvas id="grafico" role="img"
+                aria-label="Gráfico de puntos con el NDVI y SAVI promedio del fundo entre 2018 y 2024. Los mismos datos están en la tabla de abajo."
+                data-traducir
+                data-es-aria-label="Gráfico de puntos con el NDVI y SAVI promedio del fundo entre 2018 y 2024. Los mismos datos están en la tabla de abajo."
+                data-en-aria-label="Scatter chart of the estate's mean NDVI and SAVI from 2018 to 2024. The same data is in the table below."></canvas>
+      </div>
+      <details class="tabla-datos">
+        <summary><span lang="es">Ver los datos como tabla</span><span lang="en">Show the data as a table</span></summary>
+        <div class="tabla-desplazable">
+          <table>
+            <thead>
+              <tr>
+                <th><span lang="es">Fecha</span><span lang="en">Date</span></th>
+                <th class="num">NDVI</th>
+                <th class="num"><span lang="es">NDVI (DE)</span><span lang="en">NDVI (SD)</span></th>
+                <th class="num">SAVI</th>
+                <th class="num"><span lang="es">SAVI (DE)</span><span lang="en">SAVI (SD)</span></th>
+              </tr>
+            </thead>
+            <tbody id="tabla"></tbody>
+          </table>
+        </div>
+      </details>
+    </section>
+
+    <article class="texto-proyecto">
+      <h2><span lang="es">Qué pasó en el fundo</span><span lang="en">What happened at the estate</span></h2>
+      <p lang="es">La acción la realizó el Centro Experimental Forestal (CEFOR) con apoyo de la Corporación Nacional Forestal (CONAF), dentro de los planes de reactivación económica de 2021 y del programa Siembra por Chile de 2022. La idea era reemplazar aromo, una especie exótica, por especies nativas. Tras la corta no hubo acciones de seguimiento, y el aromo, que rebrota con fuerza desde los tocones, volvió a cubrir el predio en uno a dos años.</p>
+      <p lang="en">The action was carried out by the Experimental Forestry Center (CEFOR) with support from Chile's National Forestry Corporation (CONAF), under the 2021 economic recovery plans and the 2022 Siembra por Chile program. The goal was to replace blackwood, an exotic species, with native trees. There was no follow-up after the clearing, and blackwood, which resprouts vigorously from stumps, covered the site again within one to two years.</p>
+      <p lang="es">El gráfico lo muestra: ambos índices caen a partir de 2022 y se estabilizan a inicios de 2024. Que el NDVI vuelva a valores parecidos a los de antes no significa que la restauración funcionó: la cobertura que volvió es, sobre todo, aromo.</p>
+      <p lang="en">The chart shows it: both indices drop from 2022 onward and level off in early 2024. NDVI returning to pre-clearing values doesn't mean the restoration worked; the cover that came back is mostly blackwood.</p>
+
+      <h2><span lang="es">Por qué NDVI y SAVI</span><span lang="en">Why NDVI and SAVI</span></h2>
+      <p lang="es">El NDVI mide el vigor de la vegetación: sin plantas, como después de una corta, su valor baja. Pero con suelo descubierto el NDVI se ve afectado por el brillo del suelo, por eso usé también el SAVI, que lo corrige con un factor L (0,5 para cobertura intermedia).</p>
+      <p lang="en">NDVI measures vegetation vigor: without plants, as after a clearing, it drops. But over bare soil NDVI is affected by soil brightness, so I also used SAVI, which corrects for it with a factor L (0.5 for intermediate cover).</p>
+      <p class="formula">NDVI = (NIR − Red) / (NIR + Red)<br>SAVI = (NIR − Red) / (NIR + Red + L) × (1 + L)</p>
+      <p lang="es">El SAVI muestra además un ciclo estacional, más marcado a inicios de 2024, que atribuyo al comportamiento estacional del aromo.</p>
+      <p lang="en">SAVI also shows a seasonal cycle, more pronounced in early 2024, which I attribute to the seasonal behavior of blackwood.</p>
+
+      <h2><span lang="es">Lo que se vio en terreno</span><span lang="en">What we saw in the field</span></h2>
+      <ul>
+        <li lang="es">En los núcleos 8 y 10 domina el aromo, que rebrota desde los tocones.</li>
+        <li lang="en">Blackwood dominates nuclei 8 and 10, resprouting from stumps.</li>
+        <li lang="es">Muchos robles (<em>Nothofagus obliqua</em>) estaban secos, suprimidos o caídos: no lograron competir con el aromo por los recursos.</li>
+        <li lang="en">Many roble trees (<em>Nothofagus obliqua</em>) were dead, suppressed or fallen: they couldn't compete with blackwood for resources.</li>
+        <li lang="es">En el núcleo 13 había troncos con restos de carbón, lo que sugiere que además de la corta se usó quema (o que hubo una quema anterior).</li>
+        <li lang="en">Nucleus 13 had logs with charcoal remains, suggesting that burning was used besides cutting (or that there was an earlier burn).</li>
+        <li lang="es">Había fecas de ganado bovino, que probablemente consumió parte de las plantas nativas.</li>
+        <li lang="en">There was cattle dung; the animals probably ate some of the native plants.</li>
+      </ul>
+      <p lang="es">Una acción puntual, sea una corta o una plantación, no basta: sin seguimiento, monitoreo y compromiso de la comunidad local, la restauración no prospera.</p>
+      <p lang="en">A one-off action, whether clearing or planting, isn't enough: without follow-up, monitoring and the commitment of the local community, restoration doesn't take hold.</p>
+
+      <h2><span lang="es">Cómo se hizo</span><span lang="en">How it was made</span></h2>
+      <ul>
+        <li lang="es"><strong>Índices:</strong> NDVI y SAVI promedio (y su desviación estándar) dentro del fundo para cada imagen Sentinel-2 disponible entre diciembre de 2018 y octubre de 2024, con una curva GAM para la tendencia. Algunas fechas aisladas con valores muy bajos probablemente corresponden a nubosidad.</li>
+        <li lang="en"><strong>Indices:</strong> mean NDVI and SAVI (and their standard deviation) within the estate for each Sentinel-2 image available from December 2018 to October 2024, with a GAM curve for the trend. A few isolated dates with very low values are probably cloud-affected.</li>
+        <li lang="es"><strong>Terreno:</strong> el límite del fundo y los 21 núcleos de plantación vienen del mapa georreferenciado del predio (PDF) que nos entregaron en la visita; las fotos son mías, de ese día.</li>
+        <li lang="en"><strong>Field:</strong> the estate boundary and the 21 planting nuclei come from the georeferenced map of the site (PDF) we were given during the visit; the photos are mine, from that day.</li>
+        <li lang="es"><strong>Web:</strong> mapa con <a href="https://maplibre.org/">MapLibre GL JS</a> sobre imágenes satelitales de Esri, y gráfico con <a href="https://www.chartjs.org/">Chart.js</a>. El análisis original está en mi bitácora, hecha con Python y Quarto.</li>
+        <li lang="en"><strong>Web:</strong> map with <a href="https://maplibre.org/">MapLibre GL JS</a> over Esri satellite imagery, and chart with <a href="https://www.chartjs.org/">Chart.js</a>. The original analysis is in my field log, built with Python and Quarto.</li>
+      </ul>
+      <div class="enlaces-fuente">
+        <a class="boton boton-secundario" href="https://aloniss.github.io/bitacora/prac2_20-08-24.html" target="_blank" rel="noopener"><span lang="es">Ver la bitácora original</span><span lang="en">See the original field log</span> ↗</a>
+        <a class="boton boton-secundario" href="https://github.com/Aloniss/bitacora" target="_blank" rel="noopener"><span lang="es">Repositorio</span><span lang="en">Repository</span> ↗</a>
+      </div>
+    </article>
+  </main>
+
+  <footer class="pie">
+    <div class="contenedor">
+      <span>© 2026 Alen Miranda</span>
+      <span>
+        <span lang="es">Imágenes: Sentinel-2 (Copernicus), Esri, Google Earth · Mapa base © OpenStreetMap, OpenFreeMap</span>
+        <span lang="en">Imagery: Sentinel-2 (Copernicus), Esri, Google Earth · Basemap © OpenStreetMap, OpenFreeMap</span>
+      </span>
+    </div>
+  </footer>
+
+  <script type="module" src="../../js/sitio.js"></script>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

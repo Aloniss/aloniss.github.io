@@ -18,6 +18,8 @@ js/mapa-base.js            crearMapa(): mapa MapLibre que sigue el tema y el idi
 js/portada.js              Volcán Calbuco en 3D girando en la portada
 img/icono.svg              Ícono de la pestaña
 proyectos/
+  incendios-araucania/     Random Forest de probabilidad de ignición (taller de Python)
+  ndvi-savi-cefor/         NDVI y SAVI con Sentinel-2 en el fundo del CEFOR (bitácora)
   sismos-chile/            Un proyecto = una carpeta
     index.html             Página del proyecto
     app.js                 Mapa, animación y gráfico
@@ -97,6 +99,17 @@ Las etiquetas del mapa base (países, ciudades) cambian solas con `crearMapa()`.
    rama `main`, carpeta `/ (root)`, y guarda. Al minuto el sitio está en línea.
 
 El archivo `.nojekyll` le dice a GitHub que publique los archivos tal cual, sin procesarlos con Jekyll.
+
+## Datos de los proyectos
+
+**incendios-araucania**: datos del capítulo 5 del
+[taller](https://github.com/Aloniss/taller.github.io) (`recursos/rf/`). El modelo se volvió a correr
+con el código del libro y semilla fija (42); `datos/probabilidad-valores.png` guarda la probabilidad
+en gris (0–250 = 0–1, 255 = sin dato), en Web Mercator, y la página la colorea según el tema.
+
+**ndvi-savi-cefor**: límite del fundo y núcleos desde `recursos/p2/fundoNucleos.gpkg` de la
+[bitácora](https://github.com/Aloniss/bitacora); la serie de NDVI y SAVI se extrajo del gráfico
+publicado en la práctica del 20-08-2024. Las fotos se redujeron y se les quitaron los metadatos.
 
 ## Datos del proyecto de ejemplo
 

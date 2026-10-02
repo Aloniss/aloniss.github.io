@@ -19,6 +19,13 @@
   --boton: #256abf;
   --boton-texto: #ffffff;
   --serie-1: #2a78d6;
+  --serie-2: #eb6834;
+  /* NDVI y SAVI: verde agua y naranja (validados para daltonismo) */
+  --serie-ndvi: #1baf7a;
+  --serie-savi: #eb6834;
+  --banda: rgba(11, 11, 11, 0.06);
+  /* Rampa de calor (probabilidad): lo bajo se desvanece, lo alto es rojo oscuro */
+  --rampa-calor: linear-gradient(90deg, rgba(253, 212, 158, 0), #fdd49e 12%, #fc8d59, #ef6548, #d7301f, #b30000, #7f0000);
   --futuro: #d6d5cf;
   --anillo: #ffffff;
   --cielo: #e7ecef;
@@ -52,6 +59,12 @@
     --boton: #256abf;
     --boton-texto: #ffffff;
     --serie-1: #3987e5;
+    --serie-2: #d95926;
+    --serie-ndvi: #199e70;
+    --serie-savi: #d95926;
+    --banda: rgba(255, 255, 255, 0.07);
+    /* En oscuro la rampa se invierte: lo caliente es lo más brillante */
+    --rampa-calor: linear-gradient(90deg, rgba(127, 0, 0, 0), #7f0000 12%, #b30000, #d7301f, #ef6548, #fc8d59, #fdd49e);
     --futuro: #383835;
     --anillo: #0c0c0c;
     --cielo: #1b1d20;
@@ -78,6 +91,11 @@
   --boton: #256abf;
   --boton-texto: #ffffff;
   --serie-1: #3987e5;
+  --serie-2: #d95926;
+  --serie-ndvi: #199e70;
+  --serie-savi: #d95926;
+  --banda: rgba(255, 255, 255, 0.07);
+  --rampa-calor: linear-gradient(90deg, rgba(127, 0, 0, 0), #7f0000 12%, #b30000, #d7301f, #ef6548, #fc8d59, #fdd49e);
   --futuro: #383835;
   --anillo: #0c0c0c;
   --cielo: #1b1d20;
@@ -380,17 +398,14 @@ p { margin: 0 0 1em; }
   border-radius: var(--radio);
   overflow: hidden;
 }
-.mapa-proyecto {
-  position: relative;
-  height: min(76vh, 680px);
-  min-height: 420px;
-  background: var(--superficie-2);
-}
-/* En pantallas anchas el mapa va girado y Chile queda horizontal: basta menos alto. */
+/* En pantallas chicas el mapa tiene su propio alto y la leyenda va debajo;
+   en pantallas anchas el mapa llena el panel y la leyenda flota encima. */
+.mapa-proyecto { position: relative; background: var(--superficie-2); }
+.mapa-proyecto .mapa { position: relative; height: min(76vh, 680px); min-height: 420px; }
 @media (min-width: 800px) {
   .mapa-proyecto { height: min(72vh, 580px); }
+  .mapa-proyecto .mapa { position: absolute; inset: 0; height: auto; min-height: 0; }
 }
-.mapa-proyecto .mapa { position: absolute; inset: 0; }
 
 .aviso {
   position: absolute; inset: 0; z-index: 5;
@@ -458,6 +473,7 @@ p { margin: 0 0 1em; }
 .bloque h2 { font-size: 1.25rem; margin-bottom: 0.2em; }
 .bloque .subtitulo { color: var(--texto-2); font-size: 0.9rem; margin-bottom: 16px; }
 .lienzo-grafico { position: relative; height: 260px; }
+.lienzo-grafico.alto { height: 340px; }
 
 details.tabla-datos { margin-top: 12px; font-size: 0.9rem; }
 details.tabla-datos summary { cursor: pointer; color: var(--enlace); }
@@ -471,6 +487,90 @@ td.num, th.num { text-align: right; }
 .texto-proyecto { max-width: 68ch; padding-block: 40px 16px; }
 .texto-proyecto h2 { font-size: 1.4rem; margin-top: 1.5em; }
 .texto-proyecto li { margin-bottom: 0.4em; }
+.texto-proyecto .formula {
+  font-family: var(--fuente-mono); font-size: 0.9rem;
+  background: var(--superficie-2); border-radius: 8px;
+  padding: 10px 14px; overflow-x: auto;
+}
+.enlaces-fuente { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+
+/* Bloque de código */
+.codigo {
+  margin: 0 0 1.2em; padding: 14px 16px;
+  background: var(--superficie); border: 1px solid var(--borde); border-radius: 10px;
+  font-family: var(--fuente-mono); font-size: 0.82rem; line-height: 1.55;
+  overflow-x: auto; color: var(--texto);
+}
+.codigo .comentario { color: var(--texto-2); }
+
+/* Dos paneles lado a lado (se apilan en pantallas chicas) */
+.dos-paneles { display: grid; gap: 24px; margin-top: 24px; }
+.dos-paneles > .bloque { margin-top: 0; }
+@media (min-width: 900px) {
+  .dos-paneles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .dos-paneles.mapa-y-video { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); }
+}
+.mapa-y-video { margin-top: 0; }
+@media (min-width: 800px) {
+  .mapa-y-video .mapa-proyecto { height: min(72vh, 600px); }
+}
+
+/* Video del timelapse */
+.video-panel { margin: 0; display: flex; flex-direction: column; }
+.video-panel video {
+  display: block; width: 100%; height: auto; max-height: min(72vh, 600px);
+  object-fit: contain; background: #000;
+}
+.video-panel figcaption { padding: 12px 16px; font-size: 0.85rem; color: var(--texto-2); }
+
+/* Leyenda de los gráficos (en HTML, encima del lienzo) */
+.grafico-leyenda {
+  display: flex; flex-wrap: wrap; gap: 6px 18px;
+  list-style: none; padding: 0; margin: 0 0 12px;
+  font-size: 0.85rem; color: var(--texto-2);
+}
+.grafico-leyenda li { display: flex; align-items: center; gap: 8px; }
+.clave-punto { width: 9px; height: 9px; border-radius: 50%; background: var(--c); }
+.clave-linea { width: 18px; height: 2px; border-radius: 2px; background: var(--c); }
+.clave-banda { width: 14px; height: 12px; border-radius: 2px; background: var(--banda); }
+
+/* Escala de color continua (mapas de calor) */
+.escala { width: 180px; }
+.escala-barra { height: 10px; border-radius: 3px; background: var(--rampa); box-shadow: inset 0 0 0 1px var(--borde); }
+.escala-rotulos { display: flex; justify-content: space-between; font-size: 0.75rem; font-variant-numeric: tabular-nums; margin-top: 3px; }
+
+/* Símbolos de puntos en las leyendas del mapa */
+.simbolo { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+.simbolo.relleno { background: var(--c); box-shadow: 0 0 0 1.5px var(--anillo-simbolo, #fff); }
+.simbolo.hueco { border: 1.5px solid var(--c); }
+
+/* Casillas para mostrar u ocultar capas */
+.capas { display: grid; gap: 4px; margin: 0; padding: 0; border: 0; }
+.capas legend { padding: 0; }
+.capas label { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+.capas input { accent-color: var(--serie-1); margin: 0; }
+
+/* Lectura del valor bajo el puntero */
+.lectura-mapa {
+  position: absolute; left: 12px; bottom: 12px; z-index: 3;
+  padding: 8px 12px; border-radius: 10px;
+  background: color-mix(in srgb, var(--superficie) 92%, transparent);
+  border: 1px solid var(--borde); box-shadow: var(--sombra);
+  font-size: 0.8rem; color: var(--texto-2); font-variant-numeric: tabular-nums;
+  pointer-events: none; min-width: 150px;
+}
+.lectura-mapa strong { display: block; font-size: 1.15rem; color: var(--texto); }
+/* En pantallas chicas la leyenda va debajo del mapa: la lectura sube a la esquina libre */
+@media (max-width: 799px) {
+  .lectura-mapa { top: 12px; bottom: auto; }
+}
+
+/* Foto dentro de un popup */
+.popup img {
+  display: block; width: 100%; height: auto; max-height: 170px; object-fit: cover;
+  border-radius: 6px; margin-top: 8px;
+}
+.popup a:has(img) { display: block; }
 
 /* ---------- Mapas: ajustes de MapLibre al tema ---------- */
 

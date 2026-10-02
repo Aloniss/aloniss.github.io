@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title data-traducir data-es-texto="Probabilidad de ignición en La Araucanía · Alen Miranda" data-en-texto="Wildfire ignition probability in La Araucanía · Alen Miranda">Probabilidad de ignición en La Araucanía · Alen Miranda</title>
+  <meta name="description" content="Modelo Random Forest de probabilidad de ignición de incendios forestales en La Araucanía, del taller de Python y librerías geoespaciales."
+        data-traducir
+        data-es-content="Modelo Random Forest de probabilidad de ignición de incendios forestales en La Araucanía, del taller de Python y librerías geoespaciales."
+        data-en-content="Random Forest model of wildfire ignition probability in La Araucanía, Chile, from the Python and geospatial libraries workshop.">
+  <link rel="icon" href="../../img/icono.svg" type="image/svg+xml">
+
+  <!-- Aplica tema e idioma antes de pintar, para que no parpadeen -->
+  <script src="../../js/arranque.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@6.11.2/dist/maplibre-gl.css">
+  <link rel="stylesheet" href="../../css/estilos.css">
+</head>
+<body>
+  <a class="saltar" href="#contenido"><span lang="es">Saltar al contenido</span><span lang="en">Skip to content</span></a>
+
+  <header class="barra">
+    <div class="contenedor">
+      <a class="marca" href="../../">
+        <svg viewBox="0 0 28 28" width="28" height="28" fill="none" stroke="var(--serie-1)" stroke-width="1.8" aria-hidden="true">
+          <path d="M14 3.5c5.8 0 10.5 4.1 10.5 9.7 0 6.2-5 11.3-10.8 11.3C8 24.5 3.5 20 3.5 14 3.5 8 8.3 3.5 14 3.5Z"/>
+          <path d="M14.3 8c3.4 0 6 2.4 6 5.6 0 3.6-2.8 6.4-6.2 6.4-3.3 0-5.8-2.6-5.8-6 0-3.3 2.6-6 6-6Z"/>
+          <circle cx="14.2" cy="13.8" r="2" fill="var(--serie-1)" stroke="none"/>
+        </svg>
+        Alen Miranda
+      </a>
+      <nav class="navegacion" aria-label="Principal" data-traducir data-es-aria-label="Principal" data-en-aria-label="Main">
+        <a href="../../#proyectos"><span lang="es">Proyectos</span><span lang="en">Projects</span></a>
+        <a class="opcional" href="../../#contacto"><span lang="es">Contacto</span><span lang="en">Contact</span></a>
+        <div class="idiomas" role="group" aria-label="Idioma / Language">
+          <button type="button" data-boton-idioma="es" aria-pressed="true">ES</button>
+          <button type="button" data-boton-idioma="en" aria-pressed="false">EN</button>
+        </div>
+        <button class="boton-tema" type="button" data-boton-tema>
+          <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="2"/>
+            <path d="M12 3.5a8.5 8.5 0 0 1 0 17Z" fill="currentColor"/>
+          </svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main id="contenido" class="contenedor">
+    <nav class="migas" aria-label="Ruta" data-traducir data-es-aria-label="Ruta" data-en-aria-label="Breadcrumb">
+      <a href="../../#proyectos"><span lang="es">← Todos los proyectos</span><span lang="en">← All projects</span></a>
+    </nav>
+
+    <header class="proyecto-cabecera">
+      <p class="antetitulo"><span lang="es">Taller de Python · Machine learning</span><span lang="en">Python workshop · Machine learning</span></p>
+      <h1><span lang="es">Probabilidad de ignición de incendios en La Araucanía</span><span lang="en">Wildfire ignition probability in La Araucanía</span></h1>
+      <p class="bajada" lang="es">Uno de los ejemplos del taller <em>Python y librerías geoespaciales para el análisis de datos en el contexto de los incendios forestales</em>, del que soy coautor e instructor: un modelo Random Forest que estima, píxel a píxel, la probabilidad de que se inicie un incendio, a partir de los incendios de la temporada 2016–2017.</p>
+      <p class="bajada" lang="en">One of the examples from the workshop <em>Python and geospatial libraries for data analysis in the context of wildfires</em>, which I co-authored and teach: a Random Forest model that estimates, pixel by pixel, the probability of a fire starting, trained on the fires of the 2016–2017 season.</p>
+    </header>
+
+    <!-- Las cifras se calculan desde datos/resultados.json en app.js -->
+    <dl class="cifras">
+      <div class="cifra"><dt><span lang="es">AUC en prueba</span><span lang="en">Test AUC</span></dt><dd data-cifra="auc">–</dd></div>
+      <div class="cifra"><dt><span lang="es">Puntos de ignición</span><span lang="en">Ignition points</span></dt><dd data-cifra="ignicion">–</dd></div>
+      <div class="cifra"><dt><span lang="es">Puntos sin ignición</span><span lang="en">Non-ignition points</span></dt><dd data-cifra="sinIgnicion">–</dd></div>
+      <div class="cifra"><dt><span lang="es">Variable más importante</span><span lang="en">Most important variable</span></dt><dd data-cifra="variable">–</dd></div>
+    </dl>
+
+    <section class="panel" aria-label="Mapa de probabilidad de ignición" data-traducir data-es-aria-label="Mapa de probabilidad de ignición" data-en-aria-label="Ignition probability map">
+      <div class="mapa-proyecto">
+        <div class="mapa" id="mapa">
+          <!-- Valor bajo el puntero (lo escribe app.js) -->
+          <div class="lectura-mapa" id="lectura" aria-live="off">
+            <span id="lectura-titulo"></span>
+            <strong id="lectura-valor">–</strong>
+          </div>
+        </div>
+
+        <div class="leyenda">
+          <div>
+            <p class="leyenda-titulo"><span lang="es">Probabilidad de ignición</span><span lang="en">Ignition probability</span></p>
+            <div class="escala">
+              <div class="escala-barra" style="--rampa: var(--rampa-calor)"></div>
+              <div class="escala-rotulos"><span>0</span><span><span lang="es">0,5</span><span lang="en">0.5</span></span><span>1</span></div>
+            </div>
+          </div>
+          <fieldset class="capas">
+            <legend class="leyenda-titulo"><span lang="es">Capas</span><span lang="en">Layers</span></legend>
+            <label><input type="checkbox" data-capa="probabilidad" checked> <span lang="es">Probabilidad</span><span lang="en">Probability</span></label>
+            <label><input type="checkbox" data-capa="igniciones" checked> <span class="simbolo relleno" style="--c: var(--texto); --anillo-simbolo: var(--superficie)"></span><span lang="es">Igniciones</span><span lang="en">Ignitions</span></label>
+            <label><input type="checkbox" data-capa="sin-ignicion"> <span class="simbolo hueco" style="--c: var(--texto-2)"></span><span lang="es">Sin ignición</span><span lang="en">No ignition</span></label>
+          </fieldset>
+        </div>
+
+      </div>
+    </section>
+
+    <div class="dos-paneles">
+      <section class="panel bloque">
+        <h2><span lang="es">Importancia de las variables</span><span lang="en">Variable importance</span></h2>
+        <p class="subtitulo">
+          <span lang="es">Cuánto aportó cada variable a las decisiones del modelo (suma 100 %).</span>
+          <span lang="en">How much each variable contributed to the model's decisions (adds up to 100%).</span>
+        </p>
+        <div class="lienzo-grafico">
+          <canvas id="grafico-importancia" role="img"
+                  aria-label="Gráfico de barras con la importancia de cada variable. Los mismos datos están en la tabla de abajo."
+                  data-traducir
+                  data-es-aria-label="Gráfico de barras con la importancia de cada variable. Los mismos datos están en la tabla de abajo."
+                  data-en-aria-label="Bar chart of each variable's importance. The same data is in the table below."></canvas>
+        </div>
+        <details class="tabla-datos">
+          <summary><span lang="es">Ver los datos como tabla</span><span lang="en">Show the data as a table</span></summary>
+          <div class="tabla-desplazable">
+            <table>
+              <thead><tr><th><span lang="es">Variable</span><span lang="en">Variable</span></th><th class="num"><span lang="es">Importancia</span><span lang="en">Importance</span></th></tr></thead>
+              <tbody id="tabla-importancia"></tbody>
+            </table>
+          </div>
+        </details>
+      </section>
+
+      <section class="panel bloque">
+        <h2><span lang="es">Curva ROC</span><span lang="en">ROC curve</span></h2>
+        <p class="subtitulo">
+          <span lang="es">Qué tan bien separa el modelo igniciones de no igniciones en los puntos de prueba. La diagonal es el azar.</span>
+          <span lang="en">How well the model separates ignitions from non-ignitions on the test points. The diagonal is chance.</span>
+        </p>
+        <div class="lienzo-grafico">
+          <canvas id="grafico-roc" role="img"
+                  aria-label="Curva ROC del modelo en los puntos de prueba. Los mismos datos están en la tabla de abajo."
+                  data-traducir
+                  data-es-aria-label="Curva ROC del modelo en los puntos de prueba. Los mismos datos están en la tabla de abajo."
+                  data-en-aria-label="ROC curve of the model on the test points. The same data is in the table below."></canvas>
+        </div>
+        <details class="tabla-datos">
+          <summary><span lang="es">Ver los datos como tabla</span><span lang="en">Show the data as a table</span></summary>
+          <div class="tabla-desplazable">
+            <table>
+              <thead>
+                <tr>
+                  <th class="num"><span lang="es">Falsos positivos</span><span lang="en">False positive rate</span></th>
+                  <th class="num"><span lang="es">Verdaderos positivos</span><span lang="en">True positive rate</span></th>
+                </tr>
+              </thead>
+              <tbody id="tabla-roc"></tbody>
+            </table>
+          </div>
+        </details>
+      </section>
+    </div>
+
+    <article class="texto-proyecto">
+      <h2><span lang="es">El taller</span><span lang="en">The workshop</span></h2>
+      <p lang="es">El taller teórico-práctico es un libro digital hecho con Quarto para aprender a preprocesar, procesar y analizar datos espaciales con Python, con foco en los incendios forestales. Es parte del proyecto Fondecyt de Iniciación 11231083, y sus autores somos John Gajardo, Alén Miranda, Danko Inzunza y Robert Padilla. Tiene cinco módulos:</p>
+      <p lang="en">The hands-on workshop is a digital book built with Quarto for learning to preprocess, process and analyze spatial data with Python, with a focus on wildfires. It is part of the Fondecyt Initiation project 11231083, and its authors are John Gajardo, Alén Miranda, Danko Inzunza and Robert Padilla. It has five modules:</p>
+      <ol>
+        <li lang="es">Introducción a Python y librerías esenciales: Git Bash, Miniconda, ambientes y Spyder.</li>
+        <li lang="en">Introduction to Python and essential libraries: Git Bash, Miniconda, environments and Spyder.</li>
+        <li lang="es">Fundamentos de geomática y visualización de datos ráster.</li>
+        <li lang="en">Geomatics fundamentals and raster data visualization.</li>
+        <li lang="es">Procesamiento de imágenes satelitales para el monitoreo de incendios: NDVI, NBR, dNBR, RdNBR, RBR y BAI, discretización y vectorización.</li>
+        <li lang="en">Satellite image processing for fire monitoring: NDVI, NBR, dNBR, RdNBR, RBR and BAI, classification and vectorization.</li>
+        <li lang="es">Análisis temporal y estadística zonal.</li>
+        <li lang="en">Time series analysis and zonal statistics.</li>
+        <li lang="es">Modelado y predicción del comportamiento de incendios con Random Forest (este ejemplo).</li>
+        <li lang="en">Modeling and predicting fire behavior with Random Forest (this example).</li>
+      </ol>
+
+      <h2><span lang="es">Cómo funciona el modelo</span><span lang="en">How the model works</span></h2>
+      <ul>
+        <li lang="es"><strong>Datos:</strong> puntos de ignición de la temporada 2016–2017 (con nombre, comuna, combustible y causa, en el formato de las estadísticas de CONAF), puntos sin ignición como muestras de control y un ráster de 250 m con cinco variables normalizadas entre 0 y 1: precipitación, distancia a caminos, distancia a zonas urbanas, elevación (DEM) y pendiente.</li>
+        <li lang="en"><strong>Data:</strong> ignition points from the 2016–2017 season (with name, municipality, fuel and cause, in the format of CONAF's fire statistics), non-ignition points as control samples, and a 250 m raster with five predictors normalized between 0 and 1: precipitation, distance to roads, distance to urban areas, elevation (DEM) and slope.</li>
+        <li lang="es"><strong>Entrenamiento:</strong> se extrae el valor de las cinco variables en cada punto, con etiqueta 1 (ignición) o 0 (sin ignición). El 70 % de los puntos entrena un <code>RandomForestRegressor</code> de scikit-learn y el 30 % restante se usa para medir el AUC.</li>
+        <li lang="en"><strong>Training:</strong> the five predictors are extracted at each point, labeled 1 (ignition) or 0 (no ignition). 70% of the points train a scikit-learn <code>RandomForestRegressor</code>, and the remaining 30% are used to measure the AUC.</li>
+        <li lang="es"><strong>Predicción:</strong> el modelo se aplica a cada píxel de la región; como aprendió de etiquetas 0 y 1, su resultado va de 0 a 1 y se lee como probabilidad de ignición.</li>
+        <li lang="en"><strong>Prediction:</strong> the model is applied to every pixel in the region; since it learned from 0/1 labels, its output ranges from 0 to 1 and is read as ignition probability.</li>
+        <li lang="es"><strong>Para esta página</strong> volví a correr el código del libro con una semilla fija (42), para que el resultado sea reproducible, y agregué la importancia de las variables (MDI de scikit-learn) y la curva ROC.</li>
+        <li lang="en"><strong>For this page</strong> I re-ran the book's code with a fixed random seed (42) so the result is reproducible, and added the variable importance (scikit-learn's MDI) and the ROC curve.</li>
+      </ul>
+
+      <p lang="es">El corazón del ejemplo, resumido del libro:</p>
+      <p lang="en">The core of the example, condensed from the book (the comments are in Spanish, as in the original):</p>
+<pre class="codigo"><code><span class="comentario"># Partición de datos</span>
+trainX, testX, trainy, testy = train_test_split(X, y, test_size = 0.3, shuffle = True)
+
+<span class="comentario"># Entrena el modelo con los datos de entrenamiento</span>
+modelo_RF = RandomForestRegressor()
+modelo_RF.fit(trainX, trainy)
+
+<span class="comentario"># Obtiene AUC para la estimación del desempeño</span>
+predicciones = modelo_RF.predict(X = testX)
+metrica = roc_auc_score(testy, predicciones)
+
+<span class="comentario"># Predice en cada píxel: (bandas, filas, columnas) → (píxeles, bandas)</span>
+pixeles = data.values.transpose(1, 2, 0)
+pred_2016 = modelo_RF.predict(pixeles.reshape(-1, 5))
+mapa_pred = pred_2016.reshape(pixeles.shape[0], pixeles.shape[1])</code></pre>
+
+      <div class="enlaces-fuente">
+        <a class="boton boton-secundario" href="https://aloniss.github.io/taller.github.io/" target="_blank" rel="noopener"><span lang="es">Ver el libro del taller</span><span lang="en">See the workshop book</span> ↗</a>
+        <a class="boton boton-secundario" href="https://github.com/Aloniss/taller.github.io" target="_blank" rel="noopener"><span lang="es">Repositorio</span><span lang="en">Repository</span> ↗</a>
+      </div>
+    </article>
+  </main>
+
+  <footer class="pie">
+    <div class="contenedor">
+      <span>© 2026 Alen Miranda</span>
+      <span>
+        <span lang="es">Datos: taller Fondecyt 11231083 · Mapa base © OpenStreetMap, OpenFreeMap</span>
+        <span lang="en">Data: Fondecyt 11231083 workshop · Basemap © OpenStreetMap, OpenFreeMap</span>
+      </span>
+    </div>
+  </footer>
+
+  <script type="module" src="../../js/sitio.js"></script>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
