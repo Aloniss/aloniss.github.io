@@ -12,7 +12,7 @@ const TEXTOS = {
     locale: "es-CL",
     errorDatos: "No se pudieron cargar los datos. Si abriste el archivo con doble clic, usa un servidor local (ver README).",
     notaAuc: (n) => `en el 30 % de prueba (${n} puntos)`,
-    temporada: "temporada 2016–2017",
+    temporada: "CONAF · temporada 2016–2017",
     control: "muestras de control",
     deImportancia: (p) => `${p} de la importancia`,
     variables: {
@@ -40,7 +40,7 @@ const TEXTOS = {
     locale: "en-US",
     errorDatos: "The data could not be loaded. If you opened the file with a double-click, use a local server (see README).",
     notaAuc: (n) => `on the 30% test split (${n} points)`,
-    temporada: "2016–2017 season",
+    temporada: "CONAF · 2016–2017 season",
     control: "control samples",
     deImportancia: (p) => `${p} of the importance`,
     variables: {

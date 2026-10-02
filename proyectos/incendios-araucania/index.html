@@ -57,8 +57,8 @@
     <header class="proyecto-cabecera">
       <p class="antetitulo"><span lang="es">Taller de Python · Machine learning</span><span lang="en">Python workshop · Machine learning</span></p>
       <h1><span lang="es">Probabilidad de ignición de incendios en La Araucanía</span><span lang="en">Wildfire ignition probability in La Araucanía</span></h1>
-      <p class="bajada" lang="es">Uno de los ejemplos del taller <em>Python y librerías geoespaciales para el análisis de datos en el contexto de los incendios forestales</em>, del que soy coautor e instructor: un modelo Random Forest que estima, píxel a píxel, la probabilidad de que se inicie un incendio, a partir de los incendios de la temporada 2016–2017.</p>
-      <p class="bajada" lang="en">One of the examples from the workshop <em>Python and geospatial libraries for data analysis in the context of wildfires</em>, which I co-authored and teach: a Random Forest model that estimates, pixel by pixel, the probability of a fire starting, trained on the fires of the 2016–2017 season.</p>
+      <p class="bajada" lang="es">Uno de los ejemplos del taller <em>Python y librerías geoespaciales para el análisis de datos en el contexto de los incendios forestales</em>, del que soy coautor e instructor: un modelo Random Forest que estima, píxel a píxel, la probabilidad de que se inicie un incendio, a partir de los incendios registrados por CONAF en la temporada 2016–2017.</p>
+      <p class="bajada" lang="en">One of the examples from the workshop <em>Python and geospatial libraries for data analysis in the context of wildfires</em>, which I co-authored and teach: a Random Forest model that estimates, pixel by pixel, the probability of a fire starting, trained on the fires recorded by CONAF in the 2016–2017 season.</p>
     </header>
 
     <!-- Las cifras se calculan desde datos/resultados.json en app.js -->
@@ -172,8 +172,8 @@
 
       <h2><span lang="es">Cómo funciona el modelo</span><span lang="en">How the model works</span></h2>
       <ul>
-        <li lang="es"><strong>Datos:</strong> puntos de ignición de la temporada 2016–2017 (con nombre, comuna, combustible y causa, en el formato de las estadísticas de CONAF), puntos sin ignición como muestras de control y un ráster de 250 m con cinco variables normalizadas entre 0 y 1: precipitación, distancia a caminos, distancia a zonas urbanas, elevación (DEM) y pendiente.</li>
-        <li lang="en"><strong>Data:</strong> ignition points from the 2016–2017 season (with name, municipality, fuel and cause, in the format of CONAF's fire statistics), non-ignition points as control samples, and a 250 m raster with five predictors normalized between 0 and 1: precipitation, distance to roads, distance to urban areas, elevation (DEM) and slope.</li>
+        <li lang="es"><strong>Datos:</strong> puntos de ignición de la temporada 2016–2017 registrados por CONAF (con nombre, comuna, combustible y causa), puntos sin ignición como muestras de control y un ráster de 250 m con cinco variables normalizadas entre 0 y 1: precipitación, distancia a caminos, distancia a zonas urbanas, elevación (DEM) y pendiente.</li>
+        <li lang="en"><strong>Data:</strong> ignition points from the 2016–2017 season recorded by CONAF, Chile's National Forestry Corporation (with name, municipality, fuel and cause), non-ignition points as control samples, and a 250 m raster with five predictors normalized between 0 and 1: precipitation, distance to roads, distance to urban areas, elevation (DEM) and slope.</li>
         <li lang="es"><strong>Entrenamiento:</strong> se extrae el valor de las cinco variables en cada punto, con etiqueta 1 (ignición) o 0 (sin ignición). El 70 % de los puntos entrena un <code>RandomForestRegressor</code> de scikit-learn y el 30 % restante se usa para medir el AUC.</li>
         <li lang="en"><strong>Training:</strong> the five predictors are extracted at each point, labeled 1 (ignition) or 0 (no ignition). 70% of the points train a scikit-learn <code>RandomForestRegressor</code>, and the remaining 30% are used to measure the AUC.</li>
         <li lang="es"><strong>Predicción:</strong> el modelo se aplica a cada píxel de la región; como aprendió de etiquetas 0 y 1, su resultado va de 0 a 1 y se lee como probabilidad de ignición.</li>
@@ -211,8 +211,8 @@ mapa_pred = pred_2016.reshape(pixeles.shape[0], pixeles.shape[1])</code></pre>
     <div class="contenedor">
       <span>© 2026 Alen Miranda</span>
       <span>
-        <span lang="es">Datos: taller Fondecyt 11231083 · Mapa base © OpenStreetMap, OpenFreeMap</span>
-        <span lang="en">Data: Fondecyt 11231083 workshop · Basemap © OpenStreetMap, OpenFreeMap</span>
+        <span lang="es">Datos: CONAF (igniciones) y taller Fondecyt 11231083 · Mapa base © OpenStreetMap, OpenFreeMap</span>
+        <span lang="en">Data: CONAF (ignitions) and Fondecyt 11231083 workshop · Basemap © OpenStreetMap, OpenFreeMap</span>
       </span>
     </div>
   </footer>
